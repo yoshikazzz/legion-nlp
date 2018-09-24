@@ -1,0 +1,30 @@
+version: '2'
+services:
+  app:
+    build: .
+    environment:
+      RDS_HOSTNAME: "db"
+      RDS_PORT:     "3306"
+      RDS_USERNAME: "root"
+      RDS_PASSWORD: ""
+      RDS_DB_NAME:  "legion_nlp"
+      LINE_CHANNEL_ACCESS_TOKEN: "EegFmridKV9B8yy5oMRZOnToWnjTXJOUkqUIPJR5JqRDAWqiPoOa0bgE7izecVck7uU1OrH9m6fhJe2XEB62QmHG0u2KPo3LiX/v7py2kDivcvwW+EyFiIKlD0Nkar5/wbBj2HydnGh+6LMkR11d3gdB04t89/1O/w1cDnyilFU="
+      LINE_CHANNEL_SECRET: "64b7144a2c185ea719dbc0f230b62d46"
+    command: [ "npx", "node-dev", "--inspect=0.0.0.0:9229", "index.js" ]
+    ports:
+      - "18081:8081"
+      - "19229:9229"
+    volumes:
+      - ./:/usr/src/app
+    links:
+      - db
+    depends_on:
+      - db
+  db:
+    image: mysql:5.6.27
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "13306:3306"
